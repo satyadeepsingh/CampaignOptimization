@@ -1,0 +1,8 @@
+server:
+  port: 8085
+  servlet:
+    context-path: /campaign-service
+
+spring:
+  application:
+    name: campaign-optimization-service

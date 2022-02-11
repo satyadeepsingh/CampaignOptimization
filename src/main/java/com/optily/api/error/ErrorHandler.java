@@ -20,7 +20,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value
             = { CampaignException.class})
     protected ResponseEntity<Object> handleInternal(
-            CampaignException ex, WebRequest request) throws JsonProcessingException {
+            CampaignException ex, WebRequest request) {
         String bodyOfResponse = "This should be application specific";
         ApiError error = new ApiError(ex.getCode(), ex.getDescription());
         return new ResponseEntity<>(error,  new HttpHeaders(), HttpStatus.BAD_REQUEST.value());

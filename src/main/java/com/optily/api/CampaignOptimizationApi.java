@@ -35,7 +35,7 @@ public class CampaignOptimizationApi {
     }
 
     @PatchMapping(CAMPAIGN_API)
-    public void applyOptimization(@RequestParam(value= CAMPAIGN_NAME_PARAM)String campaignGroupName,
+    public void applyOptimization(@RequestParam(value= CAMPAIGN_GROUP_NAME_PARAM)String campaignGroupName,
                                   @RequestParam(value= CAMPAIGN_NAME_PARAM)String campaignName) {
 
         this.campaignService.applyOptimization(campaignGroupName, campaignName);

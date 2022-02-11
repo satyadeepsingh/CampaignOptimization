@@ -5,8 +5,10 @@ import com.optily.api.error.EErrorCodes;
 import com.optily.api.response.CampaignGroupsResponse;
 import com.optily.api.response.CampaignRecommendationResponse;
 import com.optily.api.response.CampaignResponse;
+import com.optily.domain.constants.EOptimizationStatus;
 import com.optily.domain.model.Campaign;
 import com.optily.domain.model.CampaignGroup;
+import com.optily.domain.model.Optimization;
 import com.optily.domain.model.Recommendation;
 import com.optily.repository.CampaignGroupRepo;
 import lombok.RequiredArgsConstructor;
@@ -88,5 +90,30 @@ public class CampaignService {
         CampaignRecommendationResponse response = new CampaignRecommendationResponse();
         response.setCampaignName(campaignName);
         response.setRecommendedBudget(campaign.getRecommendation().getBudget());
+        optimizeCampaignGroup(campaign);
+        return response;
+    }
+
+    private void optimizeCampaignGroup(Campaign campaign) {
+
+        CampaignGroup campaignGroup = this.campaignGroupRepo.getCampaignGroupByName(campaign.getName());
+        if(validateAllCampaignsAreOptimized(campaignGroup)) return;
+        if(campaignGroup.getOptimization().getStatus() == EOptimizationStatus.OPTIMIZED) return;
+        Optimization optimization = campaignGroup.getOptimization();
+        Recommendation recommendation = new Recommendation();
+        recommendation.setId(UUID.randomUUID().toString());
+        recommendation.setBudget(campaignGroup.getCampaigns()
+                .stream()
+                .mapToDouble(camp -> camp.getRecommendation().getBudget())
+                .sum());
+        optimization.setStatus(EOptimizationStatus.OPTIMIZED);
+
+    }
+
+    private boolean validateAllCampaignsAreOptimized(CampaignGroup campaignGroup) {
+        Optional<Campaign> nonRecommendedCampOp = campaignGroup.getCampaigns().stream()
+                .filter(campaign -> campaign.getRecommendation() == null)
+                .findAny();
+        return nonRecommendedCampOp.isPresent();
     }
 }

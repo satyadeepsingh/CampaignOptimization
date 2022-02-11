@@ -19,7 +19,7 @@ public class RecommendationService {
                 .mapToDouble(Campaign::getBudget)
                 .sum();
 
-        Recommendation recommendation = campaign.getRecommendation();
+        Recommendation recommendation = new Recommendation();
         recommendation.setId(UUID.randomUUID().toString());
         recommendation.setBudget(((double) campaign.getImpressions() / sumImpressions) * sumBudget);
         campaign.setRecommendation(recommendation);

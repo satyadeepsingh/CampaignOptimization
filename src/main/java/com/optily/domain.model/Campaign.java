@@ -15,7 +15,5 @@ public class Campaign {
     private Double budget;
     private Integer impressions;
     private Double revenue;
-
-    @JsonIgnore
     private Recommendation recommendation;
 }

@@ -13,10 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Repository
 public class CampaignGroupRepo {
@@ -80,4 +77,27 @@ public class CampaignGroupRepo {
             return campaignGroups;
         }
 
+    public Optional<List<Campaign>> getCampaignsByGroup(String campaignGroupName) {
+
+        return campaignGroups.stream()
+                .filter(cg -> cg.getName().equalsIgnoreCase(campaignGroupName))
+                .map(CampaignGroup::getCampaigns)
+                .findFirst();
+    }
+
+    public Optional<Campaign> getCampaignsByGroupAndName(String campaignGroupName, String campaignName) {
+
+        return campaignGroups.stream()
+                .filter(cg -> cg.getName().equalsIgnoreCase(campaignGroupName))
+                .flatMap(cg -> cg.getCampaigns().stream())
+                .filter(campaigns -> campaigns.getName().equalsIgnoreCase(campaignName))
+                .findFirst();
+    }
+
+    public Optional<Campaign> getCampaignByName(String campaignName) {
+
+        return campaignGroups.stream().flatMap(campaignGroup -> campaignGroup.getCampaigns().stream())
+                .filter(campaign -> campaign.getName().equalsIgnoreCase(campaignName))
+                .findAny();
+    }
 }

@@ -1,9 +1,0 @@
-/home/ubuntu/Code/Tutorials/campaign-optimization-service/src/main/java/com/optily/domain.model/CampaignGroup.java
-/home/ubuntu/Code/Tutorials/campaign-optimization-service/src/main/java/com/optily/CampaignOptimizationServiceApplication.java
-/home/ubuntu/Code/Tutorials/campaign-optimization-service/src/main/java/com/optily/repository/utils/CampaignUtils.java
-/home/ubuntu/Code/Tutorials/campaign-optimization-service/src/main/java/com/optily/csv/constants/CsvConstants.java
-/home/ubuntu/Code/Tutorials/campaign-optimization-service/src/main/java/com/optily/domain.model/Campaign.java
-/home/ubuntu/Code/Tutorials/campaign-optimization-service/src/main/java/com/optily/repository/CampaignGroupRepo.java
-/home/ubuntu/Code/Tutorials/campaign-optimization-service/src/main/java/com/optily/domain.model/Recommendation.java
-/home/ubuntu/Code/Tutorials/campaign-optimization-service/src/main/java/com/optily/domain/constants/EOptimizationStatus.java
-/home/ubuntu/Code/Tutorials/campaign-optimization-service/src/main/java/com/optily/domain.model/Optimization.java

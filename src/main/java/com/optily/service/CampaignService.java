@@ -97,8 +97,18 @@ public class CampaignService {
     private void optimizeCampaignGroup(Campaign campaign) {
 
         CampaignGroup campaignGroup = this.campaignGroupRepo.getCampaignGroupByName(campaign.getName());
-        if(validateAllCampaignsAreOptimized(campaignGroup)) return;
+        markOptimized(campaignGroup);
+
+    }
+
+    public void optimizeAllCampaignsOfGroup(CampaignGroup campaignGroup) {
+        campaignGroup.getCampaigns().forEach(campaign -> applyOptimization(campaignGroup.getName(), campaign.getName()));
         if(campaignGroup.getOptimization().getStatus() == EOptimizationStatus.OPTIMIZED) return;
+        markOptimized(campaignGroup);
+    }
+
+    private void markOptimized(CampaignGroup campaignGroup) {
+        if(validateAllCampaignsAreOptimized(campaignGroup)) return;
         Optimization optimization = campaignGroup.getOptimization();
         Recommendation recommendation = new Recommendation();
         recommendation.setId(UUID.randomUUID().toString());
@@ -107,7 +117,6 @@ public class CampaignService {
                 .mapToDouble(camp -> camp.getRecommendation().getBudget())
                 .sum());
         optimization.setStatus(EOptimizationStatus.OPTIMIZED);
-
     }
 
     private boolean validateAllCampaignsAreOptimized(CampaignGroup campaignGroup) {

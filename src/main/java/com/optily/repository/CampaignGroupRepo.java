@@ -1,5 +1,7 @@
 package com.optily.repository;
 
+import com.optily.api.error.CampaignException;
+import com.optily.api.error.EErrorCodes;
 import com.optily.csv.constants.CsvConstants;
 import com.optily.domain.constants.EOptimizationStatus;
 import com.optily.domain.model.Campaign;
@@ -99,5 +101,16 @@ public class CampaignGroupRepo {
         return campaignGroups.stream().flatMap(campaignGroup -> campaignGroup.getCampaigns().stream())
                 .filter(campaign -> campaign.getName().equalsIgnoreCase(campaignName))
                 .findAny();
+    }
+
+    public CampaignGroup getCampaignGroupByName(String name) {
+
+        return this.campaignGroups.stream().filter(cg ->
+                cg.getCampaigns()
+                       .stream()
+                       .anyMatch(campaign -> campaign.getName().equalsIgnoreCase(name))
+            ).findAny()
+                .orElseThrow(() -> new CampaignException(EErrorCodes.CAMPAIGN_NOT_FOUND.getCode(),
+                        EErrorCodes.CAMPAIGN_NOT_FOUND.getValue()));
     }
 }

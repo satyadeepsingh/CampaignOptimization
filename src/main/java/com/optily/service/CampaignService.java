@@ -94,6 +94,14 @@ public class CampaignService {
         return response;
     }
 
+    public CampaignGroup getCampaignGroupRecommendation(String campaignGroupName) {
+
+        return this.campaignGroupRepo.getAllCampaignGroups().stream()
+                .filter(campaignGroup -> campaignGroup.getName().equalsIgnoreCase(campaignGroupName))
+                .findAny()
+                .orElseThrow(() ->  new CampaignException(EErrorCodes.CAMPAIGN_GROUP_NOT_FOUND.getCode(), EErrorCodes.CAMPAIGN_GROUP_NOT_FOUND.getValue()));
+    }
+
     private void optimizeCampaignGroup(Campaign campaign) {
 
         CampaignGroup campaignGroup = this.campaignGroupRepo.getCampaignGroupByName(campaign.getName());
@@ -101,7 +109,7 @@ public class CampaignService {
 
     }
 
-    public void optimizeAllCampaignsOfGroup(CampaignGroup campaignGroup) {
+    private void optimizeAllCampaignsOfGroup(CampaignGroup campaignGroup) {
         campaignGroup.getCampaigns().forEach(campaign -> applyOptimization(campaignGroup.getName(), campaign.getName()));
         if(campaignGroup.getOptimization().getStatus() == EOptimizationStatus.OPTIMIZED) return;
         markOptimized(campaignGroup);
@@ -116,6 +124,7 @@ public class CampaignService {
                 .stream()
                 .mapToDouble(camp -> camp.getRecommendation().getBudget())
                 .sum());
+        optimization.setRecommendation(recommendation);
         optimization.setStatus(EOptimizationStatus.OPTIMIZED);
     }
 
@@ -124,5 +133,13 @@ public class CampaignService {
                 .filter(campaign -> campaign.getRecommendation() == null)
                 .findAny();
         return nonRecommendedCampOp.isPresent();
+    }
+
+    public void applyOptimizationForAllInGroup(String campaignGroupName) {
+        this.optimizeAllCampaignsOfGroup(this.campaignGroupRepo.getAllCampaignGroups()
+                .stream()
+                .filter(cg -> cg.getName().equalsIgnoreCase(campaignGroupName))
+                .findAny()
+                .orElseThrow(() -> new CampaignException(EErrorCodes.CAMPAIGN_NOT_FOUND.getCode(), EErrorCodes.CAMPAIGN_NOT_FOUND.getValue())));
     }
 }

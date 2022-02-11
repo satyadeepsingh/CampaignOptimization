@@ -3,6 +3,7 @@ package com.optily.api;
 import com.optily.api.response.CampaignGroupsResponse;
 import com.optily.api.response.CampaignRecommendationResponse;
 import com.optily.api.response.CampaignResponse;
+import com.optily.domain.model.CampaignGroup;
 import com.optily.service.CampaignService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,11 +35,22 @@ public class CampaignOptimizationApi {
         return ResponseEntity.ok(campaignService.getCampaignRecommendation(campaignName));
     }
 
+    @GetMapping(RECOMMEDATION_API)
+    public ResponseEntity<CampaignGroup> getCampaignGroupRecommendedBudget(@RequestParam(value= CAMPAIGN_GROUP_NAME_PARAM)String campaignGroupName) {
+        return ResponseEntity.ok(campaignService.getCampaignGroupRecommendation(campaignGroupName));
+    }
+
     @PatchMapping(CAMPAIGN_API)
     public void applyOptimization(@RequestParam(value= CAMPAIGN_GROUP_NAME_PARAM)String campaignGroupName,
                                   @RequestParam(value= CAMPAIGN_NAME_PARAM)String campaignName) {
 
         this.campaignService.applyOptimization(campaignGroupName, campaignName);
+    }
+
+    @PutMapping(CAMPAIGN_API)
+    public void applyOptimizationForAllCampaigns(@RequestParam(value= CAMPAIGN_GROUP_NAME_PARAM)String campaignGroupName) {
+
+        this.campaignService.applyOptimizationForAllInGroup(campaignGroupName);
     }
 
 }

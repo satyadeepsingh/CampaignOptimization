@@ -14,7 +14,7 @@ public class DataProvisioning {
 
     public static final String TEST_CAMPAIGN = "TEST_CAMPAIGN";
     public static final String TEST_CAMPAIGN_C1G1 = "TEST_CAMP1_G1";
-    public static final String TEST_CAMPAIGN_C2G1 = "TEST_CAMP1_G1";
+    public static final String TEST_CAMPAIGN_C2G1 = "TEST_CAMP2_G1";
     public static final String TEST_CAMPAIGN_C1G2 = "TEST_CAMP1_G2";
     public static final String TEST_CAMP_GROUP_1 = "TEST_CAMP_GROUP_1";
     public static final String TEST_CAMP_GROUP_2 = "TEST_CAMP_GROUP_2";

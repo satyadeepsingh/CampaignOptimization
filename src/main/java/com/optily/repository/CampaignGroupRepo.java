@@ -103,12 +103,12 @@ public class CampaignGroupRepo {
                 .findAny();
     }
 
-    public CampaignGroup getCampaignGroupByName(String name) {
+    public CampaignGroup getCampaignGroupByCampaign(String campaignName) {
 
         return this.campaignGroups.stream().filter(cg ->
                 cg.getCampaigns()
                        .stream()
-                       .anyMatch(campaign -> campaign.getName().equalsIgnoreCase(name))
+                       .anyMatch(campaign -> campaign.getName().equalsIgnoreCase(campaignName))
             ).findAny()
                 .orElseThrow(() -> new CampaignException(EErrorCodes.CAMPAIGN_NOT_FOUND.getCode(),
                         EErrorCodes.CAMPAIGN_NOT_FOUND.getValue()));

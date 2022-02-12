@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class CampaignGroupRepo {
@@ -31,6 +32,10 @@ public class CampaignGroupRepo {
                 .filter(cg -> cg.getName().equalsIgnoreCase(campaignGroupName))
                 .findAny();
         if(campaignGroupOp.isPresent()) {
+            if(campaignGroupOp.get().getCampaigns().stream()
+                    .anyMatch(campaign -> campaigns.stream()
+                            .anyMatch(campaign1 -> campaign1.getName().equalsIgnoreCase(campaign.getName()))))
+               return;
             campaignGroupOp.get().getCampaigns().addAll(campaigns);
             return;
         }
@@ -73,11 +78,12 @@ public class CampaignGroupRepo {
                 }
 
             }
-        }
+    }
 
-        public List<CampaignGroup> getAllCampaignGroups() {
-            return campaignGroups;
-        }
+    public List<CampaignGroup> getAllCampaignGroups() {
+        return new ArrayList<>(campaignGroups);
+    }
+
 
     public Optional<List<Campaign>> getCampaignsByGroup(String campaignGroupName) {
 

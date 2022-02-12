@@ -14,6 +14,7 @@ import com.optily.repository.CampaignGroupRepo;
 import com.optily.service.CampaignService;
 import com.optily.service.RecommendationService;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -46,10 +47,10 @@ class CampaignServiceTest {
     @Autowired
     private CampaignService campaignService;
 
-    private static List<CampaignGroup> campaignGroups;
+    private List<CampaignGroup> campaignGroups;
 
-    @BeforeAll
-    static void setUp() {
+    @BeforeEach
+    void setUp() {
         campaignGroups = DataProvisioning.createCampaignsAndGroups();
     }
 
@@ -203,7 +204,7 @@ class CampaignServiceTest {
         when(this.campaignGroupRepo.getCampaignGroupByCampaign(TEST_CAMPAIGN_C2G1))
                 .thenReturn(campaignGroups.get(0));
         this.campaignService.applyOptimizationForAllInGroup(TEST_CAMP_GROUP_1);
-        
+
         CampaignGroupsResponse campaignGroupsResponse = this.campaignService.getUnoptimizedCampaignGroups();
         assertNotNull(campaignGroupsResponse);
         assertNotNull(campaignGroupsResponse.getCampaignGroups());

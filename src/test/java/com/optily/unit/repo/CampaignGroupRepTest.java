@@ -1,9 +1,10 @@
-package com.optily.repo;
+package com.optily.unit.repo;
 
 import com.optily.api.error.CampaignException;
 import com.optily.api.error.EErrorCodes;
 import com.optily.domain.model.Campaign;
 import com.optily.domain.model.CampaignGroup;
+import com.optily.repo.DataProvisioning;
 import com.optily.repository.CampaignGroupRepo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -83,13 +84,11 @@ class CampaignGroupRepTest {
 
         assertNotNull(ex);
         assertEquals(EErrorCodes.CAMPAIGN_NOT_FOUND.getCode(), ex.getCode());
-
-
     }
 
 
     private Campaign provision() {
-        Campaign campaign = DataProvisioning.createCampaign();
+        Campaign campaign = DataProvisioning.createCampaign(TEST_CAMPAIGN);
         campaignGroupRepo.addCampaignGroups(List.of(campaign),
                 TEST_CAMPAIGN_GROUP);
         return campaign;

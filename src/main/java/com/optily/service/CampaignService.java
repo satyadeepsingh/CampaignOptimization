@@ -2,6 +2,7 @@ package com.optily.service;
 
 import com.optily.api.error.CampaignException;
 import com.optily.api.error.EErrorCodes;
+import com.optily.api.response.CampaignGroupOptimizationResponse;
 import com.optily.api.response.CampaignGroupsResponse;
 import com.optily.api.response.CampaignRecommendationResponse;
 import com.optily.api.response.CampaignResponse;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -31,6 +33,7 @@ public class CampaignService {
     private final RecommendationService recommendationService;
 
     public CampaignGroupsResponse getAllCampaignGroups() {
+        log.info("getting all campaign groups in DB");
         List<CampaignGroup> campaignGroups =  this.campaignGroupRepo.getAllCampaignGroups();
 
         CampaignGroupsResponse response = new CampaignGroupsResponse();
@@ -40,8 +43,9 @@ public class CampaignService {
         return response;
     }
 
-    public CampaignResponse getCampaignsAndService(String campaignGroupName) {
+    public CampaignResponse getCampaignsForGroup(String campaignGroupName) {
 
+        log.info("getting campaigns of group {}", campaignGroupName);
         Optional<List<Campaign>> campaigns =  this.campaignGroupRepo.getCampaignsByGroup(campaignGroupName);
         CampaignResponse response = new CampaignResponse();
         response.setCampaigns(campaigns);
@@ -51,6 +55,7 @@ public class CampaignService {
 
     public void applyOptimization(String campaignGroupName, String campaignName) {
 
+        log.info("optimizing campaign {} in group {}", campaignName, campaignGroupName);
         Optional<List<Campaign>> campaignsInGroup =  this.campaignGroupRepo.getCampaignsByGroup(campaignGroupName);
 
         if(campaignsInGroup.isEmpty()) {
@@ -73,12 +78,12 @@ public class CampaignService {
         }
 
         recommendationService.applyOptimizationAndRecommendBudget(campaigns, campaign);
-
+        optimizeCampaignGroup(campaign);
     }
 
 
     public CampaignRecommendationResponse getCampaignRecommendation(String campaignName) {
-
+        log.info("getting campaign recommendation: {}", campaignName);
         Optional<Campaign> campaignOptional = this.campaignGroupRepo.getCampaignByName(campaignName);
         if(campaignOptional.isEmpty()) throw new CampaignException(EErrorCodes.CAMPAIGN_NOT_FOUND.getCode(), EErrorCodes.CAMPAIGN_NOT_FOUND.getValue());
         Campaign campaign = campaignOptional.get();
@@ -90,21 +95,25 @@ public class CampaignService {
         CampaignRecommendationResponse response = new CampaignRecommendationResponse();
         response.setCampaignName(campaignName);
         response.setRecommendedBudget(campaign.getRecommendation().getBudget());
-        optimizeCampaignGroup(campaign);
         return response;
     }
 
-    public CampaignGroup getCampaignGroupRecommendation(String campaignGroupName) {
-
-        return this.campaignGroupRepo.getAllCampaignGroups().stream()
-                .filter(campaignGroup -> campaignGroup.getName().equalsIgnoreCase(campaignGroupName))
+    public CampaignGroupOptimizationResponse getCampaignGroupRecommendation(String campaignGroupName) {
+        log.info("getting recommendations for campaign group {}", campaignGroupName);
+        CampaignGroupOptimizationResponse response = new CampaignGroupOptimizationResponse();
+        CampaignGroup campaignGroup =  this.campaignGroupRepo.getAllCampaignGroups().stream()
+                .filter(cg -> cg.getName().equalsIgnoreCase(campaignGroupName))
                 .findAny()
                 .orElseThrow(() ->  new CampaignException(EErrorCodes.CAMPAIGN_GROUP_NOT_FOUND.getCode(), EErrorCodes.CAMPAIGN_GROUP_NOT_FOUND.getValue()));
+        response.setRecommendation(campaignGroup.getOptimization().getRecommendation());
+        response.setCampaignGroupName(campaignGroupName);
+        response.setId(campaignGroup.getId());
+        return response;
     }
 
     private void optimizeCampaignGroup(Campaign campaign) {
 
-        CampaignGroup campaignGroup = this.campaignGroupRepo.getCampaignGroupByName(campaign.getName());
+        CampaignGroup campaignGroup = this.campaignGroupRepo.getCampaignGroupByCampaign(campaign.getName());
         markOptimized(campaignGroup);
 
     }
@@ -116,7 +125,12 @@ public class CampaignService {
     }
 
     private void markOptimized(CampaignGroup campaignGroup) {
-        if(validateAllCampaignsAreOptimized(campaignGroup)) return;
+        if(validateAllCampaignsAreOptimized(campaignGroup)) {
+            log.info("all campaigns not optimized for campaign group {}", campaignGroup);
+            return;
+        }
+        log.info("marking campaign group {} as optimized", campaignGroup);
+        log.info("optimizing campaign group {} as all campaigns are optimized", campaignGroup);
         Optimization optimization = campaignGroup.getOptimization();
         Recommendation recommendation = new Recommendation();
         recommendation.setId(UUID.randomUUID().toString());
@@ -136,10 +150,21 @@ public class CampaignService {
     }
 
     public void applyOptimizationForAllInGroup(String campaignGroupName) {
+        log.info("applying optimization for campaigns in group {}", campaignGroupName);
         this.optimizeAllCampaignsOfGroup(this.campaignGroupRepo.getAllCampaignGroups()
                 .stream()
                 .filter(cg -> cg.getName().equalsIgnoreCase(campaignGroupName))
                 .findAny()
                 .orElseThrow(() -> new CampaignException(EErrorCodes.CAMPAIGN_NOT_FOUND.getCode(), EErrorCodes.CAMPAIGN_NOT_FOUND.getValue())));
+    }
+
+    public CampaignGroupsResponse getUnoptimizedCampaignGroups() {
+        CampaignGroupsResponse response = new CampaignGroupsResponse();
+        response.setCampaignGroups(this.campaignGroupRepo.getAllCampaignGroups().stream()
+                .filter(cg -> cg.getOptimization().getStatus().equals(EOptimizationStatus.NON_OPTIMIZED))
+                        .map(CampaignGroup::getName)
+                .collect(Collectors.toList()));
+        return response;
+
     }
 }

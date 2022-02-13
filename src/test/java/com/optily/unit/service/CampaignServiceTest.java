@@ -13,7 +13,6 @@ import com.optily.repo.DataProvisioning;
 import com.optily.repository.CampaignGroupRepo;
 import com.optily.service.CampaignService;
 import com.optily.service.RecommendationService;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -37,8 +37,8 @@ Install the dependencies and devDependencies and start the server.
 
 ```sh 
 git clone https://github.com/satyadeepsingh/CampaignOptimization.git
-git checkout main
 cd campaign-optimization-service
+git checkout main
 ./mvnw spring-boot:run
 ```
 
@@ -59,7 +59,6 @@ Open postman and import the collection provided `Optily.postman_collection.json`
 Postman consists of following examples:
 
 -
-
     1. GetAllCampaigns - get all the campaign group names
 
 -

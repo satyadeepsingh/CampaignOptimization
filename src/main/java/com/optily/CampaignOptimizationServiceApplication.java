@@ -12,10 +12,10 @@ import java.io.IOException;
 @Slf4j
 public class CampaignOptimizationServiceApplication {
 
-	public static void main(String[] args) throws IOException {
-		ConfigurableApplicationContext context = SpringApplication.run(CampaignOptimizationServiceApplication.class, args);
-		context.getBean(CampaignGroupRepo.class).loadCsvTestData();
-		log.info("Bootstrapped with data: {}", context.getBean(CampaignGroupRepo.class).getAllCampaignGroups());
-	}
+    public static void main(String[] args) throws IOException {
+        ConfigurableApplicationContext context = SpringApplication.run(CampaignOptimizationServiceApplication.class, args);
+        context.getBean(CampaignGroupRepo.class).loadCsvTestData();
+        log.info("Bootstrapped with csv data");
+    }
 
 }

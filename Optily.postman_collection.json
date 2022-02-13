@@ -1,0 +1,201 @@
+{
+	"info": {
+		"_postman_id": "cb647200-311f-47f6-ad6c-1d0a75dcc06c",
+		"name": "Optily",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GetAllCampaigns",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8085/campaign-service/campaign-groups",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"campaign-service",
+						"campaign-groups"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetCampaignsOfGroup",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8085/campaign-service/campaign-groups/campaigns?campaign-group-name=CG2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"campaign-service",
+						"campaign-groups",
+						"campaigns"
+					],
+					"query": [
+						{
+							"key": "campaign-group-name",
+							"value": "CG2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OptimizeCampaignsOfGroup",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8085/campaign-service/campaign-groups/campaigns?campaign-name=3_299_BBQ_G-A_CV_SHP&campaign-group-name=CG2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"campaign-service",
+						"campaign-groups",
+						"campaigns"
+					],
+					"query": [
+						{
+							"key": "campaign-name",
+							"value": "3_299_BBQ_G-A_CV_SHP"
+						},
+						{
+							"key": "campaign-group-name",
+							"value": "CG2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetCampaignRecommendations",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8085/campaign-service/campaign-groups/campaigns/recommendations?campaign-name=3_299_BBQ_G-A_CV_SHP",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"campaign-service",
+						"campaign-groups",
+						"campaigns",
+						"recommendations"
+					],
+					"query": [
+						{
+							"key": "campaign-name",
+							"value": "3_299_BBQ_G-A_CV_SHP"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OptimizeAllCampaignsOfGroup",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8085/campaign-service/campaign-groups/campaigns?campaign-group-name=CG2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"campaign-service",
+						"campaign-groups",
+						"campaigns"
+					],
+					"query": [
+						{
+							"key": "campaign-name",
+							"value": "3_299_Lawn_Care_G-A_CV_SHP",
+							"disabled": true
+						},
+						{
+							"key": "campaign-group-name",
+							"value": "CG2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetCampaignGroupoptimizations",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8085/campaign-service/campaign-groups/optimizations?campaign-group-name=CG2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"campaign-service",
+						"campaign-groups",
+						"optimizations"
+					],
+					"query": [
+						{
+							"key": "campaign-group-name",
+							"value": "CG2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetCampaignGroupRecommendations",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8085/campaign-service/campaign-groups/optimizations?campaign-group-name=CG2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"campaign-service",
+						"campaign-groups",
+						"optimizations"
+					],
+					"query": [
+						{
+							"key": "campaign-group-name",
+							"value": "CG2"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

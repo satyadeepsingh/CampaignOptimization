@@ -53,6 +53,7 @@ For frontend environments...
 | Postman | [https://www.postman.com/downloads/][PlDb] |
 
 ## Testing
+| Unit test code coverage - 90% |
 
 Open postman and import the collection provided `Optily.postman_collection.json` in postman.
 

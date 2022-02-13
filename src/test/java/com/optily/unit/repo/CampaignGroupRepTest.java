@@ -1,10 +1,12 @@
-package com.optily.repo;
+package com.optily.unit.repo;
 
 import com.optily.api.error.CampaignException;
 import com.optily.api.error.EErrorCodes;
 import com.optily.domain.model.Campaign;
 import com.optily.domain.model.CampaignGroup;
+import com.optily.repo.DataProvisioning;
 import com.optily.repository.CampaignGroupRepo;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +24,23 @@ import static org.junit.jupiter.api.Assertions.*;
 class CampaignGroupRepTest {
 
     public static final String TEST_CAMPAIGN_GROUP = "TEST_CAMPAIGN_GROUP";
+    private static final String WRONG_CAMP = "WRONG_CAMP";
+
     @Autowired
     private CampaignGroupRepo campaignGroupRepo;
 
+    private static Campaign campaign;
+
+    @BeforeAll
+    static void provision() {
+        campaign = DataProvisioning.createCampaign(TEST_CAMPAIGN);
+
+    }
+
     @Test
     void addCampaignGroupsThenGetAllCampaignGroups() {
-        Campaign campaign = provision();
+        campaignGroupRepo.addCampaignGroups(List.of(campaign),
+                TEST_CAMPAIGN_GROUP);
         List<CampaignGroup> campaigns = campaignGroupRepo.getAllCampaignGroups();
 
         assertNotNull(campaigns);
@@ -40,8 +53,8 @@ class CampaignGroupRepTest {
 
     @Test
     void getCampaignsByGroupThenReturnCampaigns() {
-        provision();
-
+        campaignGroupRepo.addCampaignGroups(List.of(campaign),
+                TEST_CAMPAIGN_GROUP);
         Optional<List<Campaign>> optionalCampaigns = campaignGroupRepo.getCampaignsByGroup(TEST_CAMPAIGN_GROUP);
         assertTrue(optionalCampaigns.isPresent());
         List<Campaign> campaigns = optionalCampaigns.get();
@@ -55,17 +68,17 @@ class CampaignGroupRepTest {
 
     @Test
     void getCampaignByNameThenReturnCampaign() {
-        Campaign campaign = provision();
+        campaignGroupRepo.addCampaignGroups(List.of(campaign),
+                TEST_CAMPAIGN_GROUP);
         Optional<Campaign> campaignOptional = campaignGroupRepo.getCampaignByName(TEST_CAMPAIGN);
         assertTrue(campaignOptional.isPresent());
-        assertEquals(campaign, campaignOptional.get());
         assertEquals(TEST_CAMPAIGN, campaignOptional.get().getName());
     }
 
     @Test
     void getCampaignGroupByNameThenReturnGroup() {
-        provision();
-
+        campaignGroupRepo.addCampaignGroups(List.of(campaign),
+                TEST_CAMPAIGN_GROUP);
         CampaignGroup cg = campaignGroupRepo.getCampaignGroupByCampaign(TEST_CAMPAIGN);
         assertNotNull(cg);
         assertNotNull(cg.getCampaigns());
@@ -78,21 +91,14 @@ class CampaignGroupRepTest {
     @Test
     void getCampaignByNameThenThrowException() {
         CampaignException ex = assertThrows(CampaignException.class, () ->
-            campaignGroupRepo.getCampaignGroupByCampaign(TEST_CAMPAIGN)
+            campaignGroupRepo.getCampaignGroupByCampaign(WRONG_CAMP)
         );
 
         assertNotNull(ex);
         assertEquals(EErrorCodes.CAMPAIGN_NOT_FOUND.getCode(), ex.getCode());
-
-
     }
 
 
-    private Campaign provision() {
-        Campaign campaign = DataProvisioning.createCampaign();
-        campaignGroupRepo.addCampaignGroups(List.of(campaign),
-                TEST_CAMPAIGN_GROUP);
-        return campaign;
-    }
+
 
 }

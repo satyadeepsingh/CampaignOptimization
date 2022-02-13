@@ -16,21 +16,33 @@ import org.springframework.stereotype.Repository;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class CampaignGroupRepo {
 
     private final List<CampaignGroup> campaignGroups = new ArrayList<>();
 
-    public CampaignGroupRepo() {
-    }
-
+    /**
+     * @param campaigns
+     * @param campaignGroupName
+     */
     public void addCampaignGroups(List<Campaign> campaigns, String campaignGroupName) {
 
         Optional<CampaignGroup> campaignGroupOp = campaignGroups.stream()
                 .filter(cg -> cg.getName().equalsIgnoreCase(campaignGroupName))
                 .findAny();
+        //update if campaign exists
         if(campaignGroupOp.isPresent()) {
+            if(campaignGroupOp.get().getCampaigns().stream()
+                    .anyMatch(campaign -> campaigns.stream()
+                            .anyMatch(campaign1 -> campaign1.getName().equalsIgnoreCase(campaign.getName())))) {
+                campaignGroupOp.get().getCampaigns()
+                        .stream().filter(camp ->  campaigns.stream()
+                                .anyMatch(campaign1 -> campaign1.getName().equalsIgnoreCase(camp.getName()))
+                        ).findAny()
+                                .ifPresent(camp -> campaignGroupOp.get().getCampaigns().remove(camp));
+            }
             campaignGroupOp.get().getCampaigns().addAll(campaigns);
             return;
         }
@@ -73,11 +85,12 @@ public class CampaignGroupRepo {
                 }
 
             }
-        }
+    }
 
-        public List<CampaignGroup> getAllCampaignGroups() {
-            return campaignGroups;
-        }
+    public List<CampaignGroup> getAllCampaignGroups() {
+        return new ArrayList<>(campaignGroups);
+    }
+
 
     public Optional<List<Campaign>> getCampaignsByGroup(String campaignGroupName) {
 

@@ -120,8 +120,6 @@ public class CampaignService {
 
     private void optimizeAllCampaignsOfGroup(CampaignGroup campaignGroup) {
         campaignGroup.getCampaigns().forEach(campaign -> applyOptimization(campaignGroup.getName(), campaign.getName()));
-        if(campaignGroup.getOptimization().getStatus() == EOptimizationStatus.OPTIMIZED) return;
-        markOptimized(campaignGroup);
     }
 
     private void markOptimized(CampaignGroup campaignGroup) {
